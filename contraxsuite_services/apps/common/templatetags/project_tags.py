@@ -22,6 +22,8 @@
     provider, processing documents on the fly in a web application,
     or shipping ContraxSuite within a closed source product.
 """
+from security import safe_command
+
 # -*- coding: utf-8 -*-
 
 
@@ -277,8 +279,7 @@ def _get_git_data(git_command: str) -> subprocess.CompletedProcess:
         command, since the models are all part of the same codebase on the same
         machine with the same git configuration (or lack thereof).
     """
-    return subprocess.run(
-        args=git_command.split(' '),
+    return safe_command.run(subprocess.run, args=git_command.split(' '),
         universal_newlines=True,
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE,
