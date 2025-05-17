@@ -364,7 +364,7 @@ def download_pdf(data: pd.DataFrame, file_name='output'):
     try:
         data_pdf = pdf.from_string(data_html, False)
     except OSError:
-        env = Environment(loader=FileSystemLoader(settings.PROJECT_DIR('templates')))
+        env = Environment(loader=FileSystemLoader(settings.PROJECT_DIR('templates')), autoescape=True)
         template = env.get_template('pdf_export.html')
         template_vars = {"title": file_name.capitalize(),
                          "table": data_html}
