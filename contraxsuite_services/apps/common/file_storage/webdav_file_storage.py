@@ -32,7 +32,6 @@ import tempfile
 from contextlib import contextmanager
 from typing import List, Tuple, Generator, Any, Dict, Optional, BinaryIO, Union
 from urllib.parse import quote, unquote
-from xml.etree import ElementTree
 
 import requests
 from django.conf import settings
@@ -42,6 +41,7 @@ from django.core.files.storage import get_valid_filename
 
 from apps.common.file_storage.file_storage import ContraxsuiteFileStorage, UnableToReadFile
 from apps.common.singleton import Singleton
+import defusedxml.ElementTree
 
 __author__ = "ContraxSuite, LLC; LexPredict, LLC"
 __copyright__ = "Copyright 2015-2022, ContraxSuite, LLC"
@@ -121,7 +121,7 @@ class ContraxsuiteWebDAVFileStorage(ContraxsuiteFileStorage):
                                 exclude_path: Optional[str],
                                 propfind_xml: str) -> Generator[Tuple[str, bool], None, None]:
         # see tests/webdav_propfind_response_example.xml
-        root = ElementTree.fromstring(propfind_xml)  # type: ElementTree.Element
+        root = defusedxml.ElementTree.fromstring(propfind_xml)  # type: ElementTree.Element
         for response in root:  # type: ElementTree.Element
             href_elem = response.find('{DAV:}href')
             href = unquote(href_elem.text.strip('/'))
