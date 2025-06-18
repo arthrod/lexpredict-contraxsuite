@@ -33,6 +33,7 @@ from socketserver import StreamRequestHandler, UnixStreamServer
 from mlflow.models import Model
 from mlflow.pyfunc import load_model
 from mlflow.pyfunc import scoring_server
+import fickling
 
 __author__ = "ContraxSuite, LLC; LexPredict, LLC"
 __copyright__ = "Copyright 2015-2022, ContraxSuite, LLC"
@@ -58,7 +59,7 @@ class PredictRequestHandler(StreamRequestHandler):
     def handle(self):
         model = self.server.model
 
-        model_input = pickle.load(self.rfile)
+        model_input = fickling.load(self.rfile)
 
         try:
             start = time.time()
