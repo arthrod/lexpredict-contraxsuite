@@ -67,6 +67,6 @@ class TestLocalFileStorage(DjangoTestCase):
 
             with lfa.get_as_local_fn('documents/sub1/sub2/file.txt') as (fn, _uri):
                 with open(fn, 'r') as f:
-                    self.assertEqual(f.readline(), 'Hello, World!')
+                    self.assertEqual(f.readline(5_000_000), 'Hello, World!')
         finally:
             rmtree(temp_dir)
