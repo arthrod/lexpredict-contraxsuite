@@ -22,6 +22,8 @@
     provider, processing documents on the fly in a web application,
     or shipping ContraxSuite within a closed source product.
 """
+from security import safe_command
+
 # -*- coding: utf-8 -*-
 
 
@@ -207,8 +209,7 @@ if __name__ == "__main__":
             logging.info(f'Generated .rst: {file_path}')
 
     if args.all:
-        subprocess.run(
-            args='make clean'.split(' '),
+        safe_command.run(subprocess.run, args='make clean'.split(' '),
             universal_newlines=True,
         )
 
@@ -222,8 +223,7 @@ if __name__ == "__main__":
     logging.info(f'Running Sphinx command: {command}')
 
     command_results: subprocess.CompletedProcess = \
-        subprocess.run(
-            args=command.split(' '),
+        safe_command.run(subprocess.run, args=command.split(' '),
             universal_newlines=True,
         )
 
