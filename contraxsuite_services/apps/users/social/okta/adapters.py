@@ -22,9 +22,6 @@
     provider, processing documents on the fly in a web application,
     or shipping ContraxSuite within a closed source product.
 """
-# -*- coding: utf-8 -*-
-
-import requests
 
 from allauth.socialaccount.models import SocialApp
 from allauth.socialaccount.providers.oauth2.client import OAuth2Error
@@ -33,6 +30,7 @@ from apps.users.social.adapters import email_follows_pattern, CustomOAuth2Adapte
 from apps.users.social.okta.provider import OktaProvider
 from apps.users.social.custom_uris import get_callback_url
 from apps.users.models import User
+from security import safe_requests
 
 __author__ = "ContraxSuite, LLC; LexPredict, LLC"
 __copyright__ = "Copyright 2015-2022, ContraxSuite, LLC"
@@ -68,7 +66,7 @@ class OktaOAuth2Adapter(CustomOAuth2Adapter):
         return login
 
     def get_response(self, token):
-        return requests.get(self.profile_url,
+        return safe_requests.get(self.profile_url,
                             json={},
                             headers={'Authorization': f'Bearer {token.token}'})
 

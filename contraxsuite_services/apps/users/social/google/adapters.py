@@ -25,13 +25,13 @@
 # -*- coding: utf-8 -*-
 
 import logging
-import requests
 
 from allauth.socialaccount.providers.oauth2.client import OAuth2Error
 
 from apps.users.social.adapters import email_follows_pattern, CustomOAuth2Adapter
 from apps.users.social.google.provider import GoogleProvider
 from apps.users.models import User
+from security import safe_requests
 
 __author__ = "ContraxSuite, LLC; LexPredict, LLC"
 __copyright__ = "Copyright 2015-2022, ContraxSuite, LLC"
@@ -51,7 +51,7 @@ class GoogleOAuth2Adapter(CustomOAuth2Adapter):
     profile_url = 'https://www.googleapis.com/oauth2/v1/userinfo'
 
     def complete_login(self, request, app, token, **kwargs):
-        resp = requests.get(self.profile_url,
+        resp = safe_requests.get(self.profile_url,
                             params={'access_token': token.token,
                                     'alt': 'json'})
         resp.raise_for_status()
