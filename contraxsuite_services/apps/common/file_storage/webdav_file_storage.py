@@ -42,6 +42,7 @@ from django.core.files.storage import get_valid_filename
 
 from apps.common.file_storage.file_storage import ContraxsuiteFileStorage, UnableToReadFile
 from apps.common.singleton import Singleton
+from security import safe_requests
 
 __author__ = "ContraxSuite, LLC; LexPredict, LLC"
 __copyright__ = "Copyright 2015-2022, ContraxSuite, LLC"
@@ -261,7 +262,7 @@ class ContraxsuiteWebDAVFileStorage(ContraxsuiteFileStorage):
     @contextmanager
     def get_as_local_fn(self, rel_file_path: str):
         url = self.sub_path_join(self.root_url, quote(rel_file_path))
-        r = requests.get(url, stream=True, auth=self.auth)
+        r = safe_requests.get(url, stream=True, auth=self.auth)
         if r.status_code != 200:
             raise UnableToReadFile('Unable to read file: {0}. Http status code: {1}. Http message: {2}'
                                    .format(url, r.status_code, r.text))
@@ -281,7 +282,7 @@ class ContraxsuiteWebDAVFileStorage(ContraxsuiteFileStorage):
 
     def read(self, rel_file_path: str) -> Optional[bytes]:
         url = self.sub_path_join(self.root_url, quote(rel_file_path))
-        r = requests.get(url, stream=True, auth=self.auth)
+        r = safe_requests.get(url, stream=True, auth=self.auth)
         if r.status_code == 404:
             return None
         if r.status_code != 200:
@@ -297,7 +298,7 @@ class ContraxsuiteWebDAVFileStorage(ContraxsuiteFileStorage):
         rel_file_path = self.sub_path_join(self.documents_path, rel_file_path)
 
         url = self.sub_path_join(self.root_url, quote(rel_file_path))
-        r = requests.get(url, stream=True, auth=self.auth,
+        r = safe_requests.get(url, stream=True, auth=self.auth,
                          headers=extra_headers)
         if r.status_code == 404:
             return None

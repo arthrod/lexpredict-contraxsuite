@@ -25,7 +25,6 @@
 # -*- coding: utf-8 -*-
 
 import logging
-import requests
 from urllib.parse import urlparse
 
 from allauth.socialaccount.models import SocialApp
@@ -34,6 +33,7 @@ from allauth.socialaccount.providers.oauth2.client import OAuth2Error
 from apps.users.models import User
 from apps.users.social.adapters import email_follows_pattern, CustomOAuth2Adapter
 from apps.users.social.elevate.provider import ElevateProvider
+from security import safe_requests
 
 __author__ = "ContraxSuite, LLC; LexPredict, LLC"
 __copyright__ = "Copyright 2015-2022, ContraxSuite, LLC"
@@ -58,7 +58,7 @@ class ElevateOAuth2Adapter(CustomOAuth2Adapter):
         self.profile_url = social_app_uri_map.get('profile')
 
     def complete_login(self, request, app, token, **kwargs):
-        resp = requests.get(self.profile_url,
+        resp = safe_requests.get(self.profile_url,
                             headers={'Authorization': f'Bearer {token.token}'})
         resp.raise_for_status()
         extra_data = resp.json()['data']

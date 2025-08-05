@@ -40,6 +40,7 @@ from apps.common.script_utils import exec_script
 from apps.document.models import DocumentType, Document
 from apps.project.models import Project
 from apps.users.models import User
+from security import safe_requests
 
 __author__ = "ContraxSuite, LLC; LexPredict, LLC"
 __copyright__ = "Copyright 2015-2022, ContraxSuite, LLC"
@@ -165,7 +166,7 @@ class IManageConfig(models.Model):
         if additional_params:
             params.update(additional_params)
 
-        resp = requests.get(self.build_url('/api/v1/documents/search'),
+        resp = safe_requests.get(self.build_url('/api/v1/documents/search'),
                             proxies=self.requests_proxies,
                             verify=self.requests_verify_ssl_certs,
                             headers={'X-Auth-Token': auth_token},
@@ -173,7 +174,7 @@ class IManageConfig(models.Model):
         return resp['data']
 
     def load_document(self, auth_token: str, imanage_doc_id: str) -> Tuple[str, requests.Response]:
-        resp = requests.get(self.build_url('/api/v1/documents/{doc_id}/download'.format(doc_id=imanage_doc_id)),
+        resp = safe_requests.get(self.build_url('/api/v1/documents/{doc_id}/download'.format(doc_id=imanage_doc_id)),
                             headers={'X-Auth-Token': auth_token},
                             proxies=self.requests_proxies,
                             verify=self.requests_verify_ssl_certs,

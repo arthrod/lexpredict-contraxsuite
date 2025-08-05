@@ -25,7 +25,6 @@
 # -*- coding: utf-8 -*-
 
 import logging
-import requests
 
 from django.conf import settings
 
@@ -36,6 +35,7 @@ from apps.users.social.custom_auxilary import format_data_message
 from apps.users.social.custom_uris import get_callback_url
 from apps.users.social.adapters import email_follows_pattern, CustomOAuth2Adapter
 from apps.users.models import User
+from security import safe_requests
 
 __author__ = "ContraxSuite, LLC; LexPredict, LLC"
 __copyright__ = "Copyright 2015-2022, ContraxSuite, LLC"
@@ -57,7 +57,7 @@ class Office365OAuth2Adapter(CustomOAuth2Adapter):
 
     def complete_login(self, request, app, token, **kwargs):
         headers = {'Authorization': f'Bearer {token}'}
-        resp = requests.get(self.profile_url, headers=headers)
+        resp = safe_requests.get(self.profile_url, headers=headers)
         extra_data = resp.json()
         try:
             login = self.get_provider().sociallogin_from_response(
